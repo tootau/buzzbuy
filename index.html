@@ -30,10 +30,17 @@
         h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
         p.bio { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem; }
         
-        /* Redes Sociais no Topo */
-        .social-icons { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem; }
+        /* Redes Sociais */
+        .social-icons { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
         .social-icon { color: #f8fafc; font-size: 1.5rem; transition: all 0.3s ease; text-decoration: none; opacity: 0.8; }
         .social-icon:hover { opacity: 1; transform: scale(1.15); color: #3b82f6; }
+
+        /* Barra de Pesquisa NOVA */
+        .search-box { position: relative; margin-bottom: 1.5rem; width: 100%; }
+        .search-box input { width: 100%; padding: 1rem 1rem 1rem 3rem; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 1rem; outline: none; transition: all 0.3s ease; font-family: 'Inter', sans-serif; }
+        .search-box input:focus { background: rgba(255, 255, 255, 0.1); border-color: var(--accent); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+        .search-box input::placeholder { color: var(--text-muted); }
+        .search-box .search-icon { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
 
         .links-container { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; }
         
@@ -41,53 +48,11 @@
         .link-card:hover { transform: translateY(-3px) scale(1.02); background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.2); box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.3); }
         
         /* Design dos Produtos */
-        .product-card { 
-            justify-content: flex-start; 
-            padding: 0; 
-            text-align: left; 
-            background: #3498db; 
-            border: none;
-            min-height: 160px; 
-            align-items: stretch; 
-        }
-        
-        .product-img { 
-            width: 45%; 
-            height: auto; 
-            object-fit: cover; 
-            border-radius: 0; 
-            margin-right: 0;
-            border: none;
-            background-color: white;
-        }
-        
-        .product-info { 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-between; 
-            flex: 1; 
-            padding: 1rem;
-        }
-        
-        .product-title { 
-            font-weight: 600; 
-            font-size: 0.95rem; 
-            color: #ffffff; 
-            line-height: 1.3;
-            margin-bottom: 10px;
-        }
-        
-        .product-subtitle { 
-            font-size: 0.9rem; 
-            color: #3498db; 
-            background: #ffffff; 
-            padding: 0.6rem 1rem; 
-            border-radius: 30px; 
-            text-align: center;
-            font-weight: 700;
-            width: 100%;
-        }
-
+        .product-card { justify-content: flex-start; padding: 0; text-align: left; background: #3498db; border: none; min-height: 160px; align-items: stretch; }
+        .product-img { width: 45%; height: auto; object-fit: cover; border-radius: 0; margin-right: 0; border: none; background-color: white; }
+        .product-info { display: flex; flex-direction: column; justify-content: space-between; flex: 1; padding: 1rem; }
+        .product-title { font-weight: 600; font-size: 0.95rem; color: #ffffff; line-height: 1.3; margin-bottom: 10px; }
+        .product-subtitle { font-size: 0.9rem; color: #3498db; background: #ffffff; padding: 0.6rem 1rem; border-radius: 30px; text-align: center; font-weight: 700; width: 100%; }
         .link-icon { font-size: 1.2rem; width: 30px; display: flex; align-items: center; justify-content: center; }
         .link-text { flex: 1; text-align: center; padding-right: 30px; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
@@ -98,27 +63,30 @@
     <div class="container">
         
         <div class="profile-img-container">
-            <!-- SUA FOTO: Coloque o link da sua foto no lugar do link abaixo -->
-            <img src="https://github.com/tootau/Bio/blob/main/logo%20buzzbuy.jpg?raw=true" class="profile-img">
+            <!-- SUA FOTO: Mudei para buscar a logo.jpg direto do github -->
+            <img src="logo.jpg" alt="Profile" class="profile-img" onerror="this.src='https://ui-avatars.com/api/?name=Buzz+Buy&background=1e293b&color=fff&size=200'">
             <div class="verified-badge"><i class="fas fa-check"></i></div>
         </div>
         
         <!-- SEU NOME E BIO -->
-        <h1>BUZZBUY</h1>
-        <p class="bio">Welcome to Buzzbuy! Here you'll find a list of the best products ever discovered.
-
-Have fun! 👇</p>
+        <h1>@seu_usuario</h1>
+        <p class="bio">Encontre tudo o que você precisa abaixo 👇</p>
         
-        <!-- REDES SOCIAIS (NO TOPO AGORA) -->
-        <!-- Para preencher, basta colocar o link do seu perfil onde está escrito "https://..." -->
+        <!-- REDES SOCIAIS -->
         <div class="social-icons">
-            <a href="https://tiktok.com/@buzzbuy_trend" target="_blank" class="social-icon" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-            <a href="https://instagram.com/buzzbuy_trend" target="_blank" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.youtube.com/@BUZZBUY_TREND" target="_blank" class="social-icon" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-            <a href="https://www.facebook.com/share/164TyCtQ2b/" target="_blank" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-            <a href="https://pinterest.com/buzzbuy_trend" target="_blank" class="social-icon" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
-            <a href="https://www.reddit.com/u/BUZZ_BUY/s/fq7UN5IsIp" target="_blank" class="social-icon" aria-label="Reddit"><i class="fab fa-reddit"></i></a>
-            <a href="mailto:buzzbuy.trend.treasures@gmail.com" target="_blank" class="social-icon" aria-label="Email"><i class="fas fa-envelope"></i></a>
+            <a href="https://tiktok.com/@SEU_USUARIO" target="_blank" class="social-icon" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+            <a href="https://instagram.com/SEU_USUARIO" target="_blank" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://youtube.com/SEU_CANAL" target="_blank" class="social-icon" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://facebook.com/SEU_PERFIL" target="_blank" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="https://pinterest.com/SEU_USUARIO" target="_blank" class="social-icon" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+            <a href="https://reddit.com/user/SEU_USUARIO" target="_blank" class="social-icon" aria-label="Reddit"><i class="fab fa-reddit"></i></a>
+            <a href="mailto:seu-email@gmail.com" target="_blank" class="social-icon" aria-label="Email"><i class="fas fa-envelope"></i></a>
+        </div>
+
+        <!-- BARRA DE PESQUISA (NOVA) -->
+        <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" placeholder="Pesquisar produto...">
         </div>
 
         <div class="links-container" id="dynamic-links">
@@ -132,7 +100,6 @@ Have fun! 👇</p>
     <script>
         const LINK_DA_PLANILHA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRJZGWgU5AWB2SIaciNqMYAbyLj2qbL6YPjURIqK7gBqSwHdV78njYxzWY2DHX73Jj545QqMDZ2VMio/pub?output=csv"; 
 
-        // Função profissional para ler planilhas corretamente
         function lerLinhaCSV(linha) {
             let resultado = [];
             let pedaco = '';
@@ -197,6 +164,26 @@ Have fun! 👇</p>
                 container.innerHTML = "<p>Erro ao carregar planilha.</p>";
             }
         }
+        
+        // LÓGICA DA BARRA DE PESQUISA (NOVO)
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const termoBusca = e.target.value.toLowerCase();
+            const todosLinks = document.querySelectorAll('.link-card');
+            
+            todosLinks.forEach(link => {
+                const tituloProduto = link.querySelector('.product-title, .link-text');
+                if (tituloProduto) {
+                    const texto = tituloProduto.textContent.toLowerCase();
+                    // Se o texto digitado existir no nome do produto, deixa visível. Se não, oculta.
+                    if (texto.includes(termoBusca)) {
+                        link.style.display = 'flex';
+                    } else {
+                        link.style.display = 'none';
+                    }
+                }
+            });
+        });
+
         carregarLinks();
     </script>
 </body>
