@@ -71,7 +71,6 @@
         <h1>BUZZBUY</h1>
         <p class="bio">Welcome to Buzzbuy! Here you'll find a list of the best products ever discovered. Have fun! 👇</p>
         
-        <!-- REDES SOCIAIS: Correção aplicada no E-mail (Sem o target="_blank") -->
         <div class="social-icons">
             <a href="https://tiktok.com/@buzzbuy_trend" target="_blank" class="social-icon" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
             <a href="https://instagram.com/buzzbuy_trend" target="_blank" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
@@ -79,7 +78,6 @@
             <a href="https://facebook.com/profile.php?id=61572938610265" target="_blank" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
             <a href="https://pinterest.com/buzzbuy_trend" target="_blank" class="social-icon" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
             <a href="https://reddit.com/user/BUZZ_BUY/" target="_blank" class="social-icon" aria-label="Reddit"><i class="fab fa-reddit"></i></a>
-            <!-- ATENÇÃO: O erro estava no target="_blank" do e-mail. Ele foi removido. -->
             <a href="mailto:buzzbuy.trend.treasures@gmail.com" class="social-icon" aria-label="Email"><i class="fas fa-envelope"></i></a>
         </div>
 
@@ -99,102 +97,88 @@
 
     <script>
         const LINK_DA_PLANILHA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRJZGWgU5AWB2SIaciNqMYAbyLj2qbL6YPjURIqK7gBqSwHdV78njYxzWY2DHX73Jj545QqMDZ2VMio/pub?output=csv"; 
+        const LINK_AUTOMATICO = "produtos_automaticos.csv"; 
 
         function lerLinhaCSV(linha) {
-            let resultado = [];
-            let pedaco = '';
-            let dentroDeAspas = false;
+            let resultado = [], pedaco = '', dentro = false;
             for (let i = 0; i < linha.length; i++) {
-                let char = linha[i];
-                if (char === '"' && linha[i+1] === '"') { pedaco += '"'; i++; } 
-                else if (char === '"') { dentroDeAspas = !dentroDeAspas; } 
-                else if (char === ',' && !dentroDeAspas) { resultado.push(pedaco); pedaco = ''; } 
-                else { pedaco += char; }
+                let c = linha[i];
+                if (c === '"' && linha[i+1] === '"') { pedaco += '"'; i++; } 
+                else if (c === '"') { dentro = !dentro; } 
+                else if (c === ',' && !dentro) { resultado.push(pedaco); pedaco = ''; } 
+                else { pedaco += c; }
             }
-            resultado.push(pedaco);
-            return resultado;
+            resultado.push(pedaco); return resultado;
+        }
+
+        async function fetchCSV(url) {
+            try {
+                const res = await fetch(url);
+                if (!res.ok) return [];
+                const data = await res.text();
+                const linhas = data.split(/\r?\n/);
+                const prods = [];
+                for (let i = 1; i < linhas.length; i++) {
+                    if(!linhas[i].trim()) continue;
+                    let colunas = lerLinhaCSV(linhas[i]);
+                    if (colunas.length >= 2) {
+                        let nome = colunas[0].trim(), link = colunas[1].trim(), imagem = colunas[2] ? colunas[2].trim() : '';
+                        if (nome && link) prods.push({ nome, link, imagem });
+                    }
+                }
+                return prods;
+            } catch (e) { return []; }
         }
 
         async function carregarLinks() {
             const container = document.getElementById('dynamic-links');
-            try {
-                const response = await fetch(LINK_DA_PLANILHA);
-                const data = await response.text();
-                container.innerHTML = '';
-                const linhas = data.split(/\r?\n/);
-                
-                for (let i = 1; i < linhas.length; i++) {
-                    if(!linhas[i].trim()) continue;
-                    
-                    let colunas = lerLinhaCSV(linhas[i]);
-                    
-                    if (colunas.length >= 2) {
-                        let nome = colunas[0].trim();
-                        let link = colunas[1].trim();
-                        let imagem = colunas[2] ? colunas[2].trim() : '';
-
-                        if (nome && link) {
-                            const a = document.createElement('a');
-                            a.href = link;
-                            a.target = "_blank";
-                            a.className = imagem ? "link-card product-card" : "link-card";
-                            a.style.animation = `slideUp 0.5s ${0.2 + (i * 0.1)}s forwards`;
-                            a.style.opacity = "0";
-
-                            if (imagem) {
-                                a.innerHTML = `
-                                    <img src="${imagem}" alt="${nome}" class="product-img" onerror="this.src='https://via.placeholder.com/150?text=Foto'">
-                                    <div class="product-info">
-                                        <span class="product-title">${nome}</span>
-                                        <span class="product-subtitle">Learn more</span>
-                                    </div>
-                                `;
-                            } else {
-                                a.innerHTML = `
-                                    <i class="fas fa-link link-icon"></i>
-                                    <span class="link-text">${nome}</span>
-                                `;
-                            }
-                            container.appendChild(a);
-                        }
-                    }
-                }
-            } catch (erro) {
-                console.error(erro);
-                container.innerHTML = "<p>Erro ao carregar os produtos. Tente recarregar a página.</p>";
+            container.innerHTML = '<div class="loading-text"><i class="fas fa-spinner fa-spin"></i> Carregando seus links...</div>';
+            
+            const [manuais, automaticos] = await Promise.all([
+                fetchCSV(LINK_DA_PLANILHA),
+                fetchCSV(LINK_AUTOMATICO).catch(() => []) 
+            ]);
+            
+            const todosProdutos = [...manuais, ...automaticos];
+            container.innerHTML = '';
+            
+            if(todosProdutos.length === 0) {
+                container.innerHTML = "<p>Nenhum produto encontrado. Tente novamente.</p>";
+                return;
             }
+
+            todosProdutos.forEach((p, index) => {
+                const a = document.createElement('a');
+                a.href = p.link;
+                a.target = "_blank";
+                a.className = p.imagem ? "link-card product-card" : "link-card";
+                a.style.animation = `slideUp 0.5s ${0.2 + (index * 0.1)}s forwards`;
+                a.style.opacity = "0";
+
+                if (p.imagem) {
+                    a.innerHTML = `<img src="${p.imagem}" alt="${p.nome}" class="product-img" onerror="this.src='https://via.placeholder.com/150?text=Foto'"><div class="product-info"><span class="product-title">${p.nome}</span><span class="product-subtitle">Learn more</span></div>`;
+                } else {
+                    a.innerHTML = `<i class="fas fa-link link-icon"></i><span class="link-text">${p.nome}</span>`;
+                }
+                container.appendChild(a);
+            });
         }
         
-        // Melhoria Técnica: Debounce e controle de estado para a busca
         let debounceTimer;
         document.getElementById('searchInput').addEventListener('input', function(e) {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
-                const termoBusca = e.target.value.toLowerCase();
-                const todosLinks = document.querySelectorAll('.link-card');
-                let encontrouAlgo = false;
-                
-                todosLinks.forEach(link => {
-                    const tituloProduto = link.querySelector('.product-title, .link-text');
-                    if (tituloProduto) {
-                        const texto = tituloProduto.textContent.toLowerCase();
-                        if (texto.includes(termoBusca)) {
-                            link.style.display = 'flex';
-                            encontrouAlgo = true;
-                        } else {
-                            link.style.display = 'none';
-                        }
-                    }
+                const termo = e.target.value.toLowerCase();
+                const links = document.querySelectorAll('.link-card');
+                let encontrou = false;
+                links.forEach(l => {
+                    const titulo = l.querySelector('.product-title, .link-text');
+                    if (titulo && titulo.textContent.toLowerCase().includes(termo)) {
+                        l.style.display = 'flex'; encontrou = true;
+                    } else { l.style.display = 'none'; }
                 });
-
-                // Exibe a mensagem de erro se não encontrar nada
-                const noResultsMsg = document.getElementById('noResultsMsg');
-                if(!encontrouAlgo && termoBusca !== '') {
-                    noResultsMsg.style.display = 'block';
-                } else {
-                    noResultsMsg.style.display = 'none';
-                }
-            }, 300); // Aguarda 300ms após o usuário parar de digitar
+                document.getElementById('noResultsMsg').style.display = (!encontrou && termo !== '') ? 'block' : 'none';
+            }, 300);
         });
 
         carregarLinks();
